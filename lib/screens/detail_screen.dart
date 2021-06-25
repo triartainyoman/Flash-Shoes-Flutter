@@ -1,7 +1,9 @@
 import 'package:flash_shoes_flutter/components/custom_button.dart';
 import 'package:flash_shoes_flutter/components/reusable_back_button.dart';
+import 'package:flash_shoes_flutter/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flash_shoes_flutter/constants.dart';
+import 'package:http/http.dart' as http;
 
 import 'edit_screen.dart';
 
@@ -16,6 +18,17 @@ class DetailScreen extends StatefulWidget {
 }
 
 class _DetailScreenState extends State<DetailScreen> {
+  void hapusData() {
+    try {
+      var url = 'http://192.168.0.117/flash_shoes_api/hapusdata.php';
+      http.post(Uri.parse(url), body: {
+        "id": widget.list[widget.index]['id'],
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -106,6 +119,48 @@ class _DetailScreenState extends State<DetailScreen> {
                     CustomButton(
                       text: 'Hapus',
                       color: kDangerColor,
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text("Hapus Data"),
+                              content: Text("Yakin Ingin Menghapus Data?"),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop(false);
+                                  },
+                                  child: Text("Batalkan"),
+                                ),
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    primary: kDangerColor,
+                                  ),
+                                  onPressed: () {
+                                    hapusData();
+                                    // Navigator.pop(context);
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (BuildContext context) {
+                                          return HomeScreen();
+                                        },
+                                      ),
+                                    );
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text("Data berhasil dihapus"),
+                                        backgroundColor: Colors.green,
+                                      ),
+                                    );
+                                  },
+                                  child: Text("Hapus"),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
                     ),
                   ],
                 ),
