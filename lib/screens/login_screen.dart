@@ -2,6 +2,7 @@ import 'package:flash_shoes_flutter/components/custom_button.dart';
 import 'package:flash_shoes_flutter/components/input_field.dart';
 import 'package:flash_shoes_flutter/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import 'home_screen.dart';
 
@@ -33,6 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
               Text("Email", style: kLabelTextStyle),
               SizedBox(height: 10.0),
               InputField(
+                type: TextInputType.emailAddress,
                 obscureText: false,
               ),
               SizedBox(height: 20.0),

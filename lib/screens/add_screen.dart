@@ -12,6 +12,12 @@ class AddScreen extends StatefulWidget {
 }
 
 class _AddScreenState extends State<AddScreen> {
+  final _formKey = GlobalKey<FormState>();
+  TextEditingController controllerKode = TextEditingController();
+  TextEditingController controllerNama = TextEditingController();
+  TextEditingController controllerHarga = TextEditingController();
+  TextEditingController controllerStok = TextEditingController();
+  TextEditingController controllerImageURL = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,81 +25,122 @@ class _AddScreenState extends State<AddScreen> {
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(30.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Stack(
-                  children: [
-                    Center(
-                      child: Text("Tambah Data", style: kTitleTextStyle),
-                    ),
-                    ReusableBackButton(onTap: () {
-                      Navigator.pop(context);
-                    }),
-                  ],
-                ),
-                SizedBox(height: 50.0),
-                // Kode
-                Text("Kode", style: kLabelTextStyle),
-                SizedBox(height: 10.0),
-                InputField(
-                  obscureText: false,
-                ),
-                SizedBox(height: 20.0),
-                // Nama
-                Text("Nama", style: kLabelTextStyle),
-                SizedBox(height: 10.0),
-                InputField(
-                  obscureText: false,
-                ),
-                SizedBox(height: 20.0),
-                // Harga
-                Text("Harga", style: kLabelTextStyle),
-                SizedBox(height: 10.0),
-                InputField(
-                  obscureText: false,
-                  type: TextInputType.number,
-                ),
-                SizedBox(height: 20.0),
-                // Stok
-                Text("Stok", style: kLabelTextStyle),
-                SizedBox(height: 10.0),
-                InputField(
-                  obscureText: false,
-                  type: TextInputType.number,
-                ),
-                SizedBox(height: 20.0),
-                // Image URL
-                Text("Image URL", style: kLabelTextStyle),
-                SizedBox(height: 10.0),
-                Container(
-                  height: 150.0,
-                  decoration: BoxDecoration(
-                    color: kSecondaryColor,
-                    borderRadius: BorderRadius.circular(6.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Stack(
+                    children: [
+                      Center(
+                        child: Text("Tambah Data", style: kTitleTextStyle),
+                      ),
+                      ReusableBackButton(onTap: () {
+                        Navigator.pop(context);
+                      }),
+                    ],
                   ),
-                  child: TextFormField(
-                    decoration: InputDecoration(
-                      contentPadding: EdgeInsets.all(20.0),
-                      border: InputBorder.none,
-                    ),
-                    maxLines: 8,
-                    style: kInputTextStyle,
-                    // validator: (value) {
-                    //   if (value == null || value.isEmpty) {
-                    //     return "Profile image link cannot be empty";
-                    //   } else {
-                    //     return null;
-                    //   }
-                    // },
+                  SizedBox(height: 50.0),
+                  // Kode
+                  Text("Kode", style: kLabelTextStyle),
+                  SizedBox(height: 10.0),
+                  InputField(
+                    controller: controllerKode,
+                    obscureText: false,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "field tidak boleh kosong";
+                      }
+                      return null;
+                    },
                   ),
-                ),
-                SizedBox(height: 20.0),
-                CustomButton(
-                  color: kPrimaryColor,
-                  text: 'Simpan',
-                ),
-              ],
+                  SizedBox(height: 20.0),
+                  // Nama
+                  Text("Nama", style: kLabelTextStyle),
+                  SizedBox(height: 10.0),
+                  InputField(
+                    controller: controllerNama,
+                    obscureText: false,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "field tidak boleh kosong";
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 20.0),
+                  // Harga
+                  Text("Harga", style: kLabelTextStyle),
+                  SizedBox(height: 10.0),
+                  InputField(
+                    controller: controllerHarga,
+                    obscureText: false,
+                    type: TextInputType.number,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "field tidak boleh kosong";
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 20.0),
+                  // Stok
+                  Text("Stok", style: kLabelTextStyle),
+                  SizedBox(height: 10.0),
+                  InputField(
+                    controller: controllerStok,
+                    obscureText: false,
+                    type: TextInputType.number,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "field tidak boleh kosong";
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 20.0),
+                  // Image URL
+                  Text("Image URL", style: kLabelTextStyle),
+                  SizedBox(height: 10.0),
+                  Container(
+                    height: 150.0,
+                    decoration: BoxDecoration(
+                      color: kSecondaryColor,
+                      borderRadius: BorderRadius.circular(6.0),
+                    ),
+                    child: TextFormField(
+                      controller: controllerImageURL,
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.all(20.0),
+                        border: InputBorder.none,
+                      ),
+                      maxLines: 8,
+                      style: kInputTextStyle,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "field tidak boleh kosong";
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  SizedBox(height: 20.0),
+                  CustomButton(
+                    color: kPrimaryColor,
+                    text: 'Simpan',
+                    onTap: () {
+                      if (_formKey.currentState.validate()) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text("Data berhasil disimpan"),
+                          ),
+                        );
+                        print(controllerNama.text);
+                      }
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ),

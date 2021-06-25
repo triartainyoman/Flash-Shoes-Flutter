@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "272450474574",
+    "project_id": "flash-shoes-ea85c",
+    "storage_bucket": "flash-shoes-ea85c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:272450474574:android:4084379ca0d99990d4e91f",
+        "android_client_info": {
+          "package_name": "com.triartainyoman.flash_shoes_flutter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "272450474574-is5kmfi6mun9lb5ened7i92ou9cmtqdo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCx1sGnDGr2vRwO69WnydzsMZmzZ6jNeNg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "272450474574-is5kmfi6mun9lb5ened7i92ou9cmtqdo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

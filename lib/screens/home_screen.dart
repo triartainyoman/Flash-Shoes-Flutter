@@ -16,11 +16,12 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   Future<List> getData() async {
-    var url = 'http://192.168.0.117/flash_shoes_api/ambildata.php';
+    var url =
+        'http://192.168.0.117/flash_shoes_api/ambildata.php?email="triartainyoman@gmail.com"';
     try {
       var data = await http.get(Uri.parse(url));
       var jsonData = json.decode(data.body);
-      print(jsonData);
+      // print(jsonData);
       return jsonData;
     } catch (e) {
       print(e);
@@ -29,7 +30,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    getData();
     return Scaffold(
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(bottom: 15.0, right: 15.0),
