@@ -7,6 +7,8 @@ import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
 
+import 'edit_profile_screen.dart';
+
 class HomeScreen extends StatefulWidget {
   static String id = 'home_screen';
   // HomeScreen({});
@@ -92,7 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   future: getProfile(),
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
                     if (snapshot.data == null) {
-                      return Text("Please wait..");
+                      return Text("Loading data..");
                     } else {
                       return Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -100,7 +102,15 @@ class _HomeScreenState extends State<HomeScreen> {
                           Text(snapshot.data[0]['nama_user'],
                               style: kTitleTextStyle),
                           InkWell(
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.push(context, MaterialPageRoute(
+                                  builder: (BuildContext context) {
+                                return EditProfile(
+                                  data: snapshot.data[0],
+                                  email: loggedInUser.email,
+                                );
+                              }));
+                            },
                             child: Container(
                               child: Stack(
                                 children: [
