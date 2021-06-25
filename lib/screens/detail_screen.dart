@@ -3,11 +3,14 @@ import 'package:flash_shoes_flutter/components/reusable_back_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flash_shoes_flutter/constants.dart';
 
+import 'edit_screen.dart';
+
 class DetailScreen extends StatefulWidget {
-  DetailScreen({@required this.index, @required this.list});
+  DetailScreen({@required this.index, @required this.list, this.email});
 
   List list;
   int index;
+  final String email;
   @override
   _DetailScreenState createState() => _DetailScreenState();
 }
@@ -89,6 +92,15 @@ class _DetailScreenState extends State<DetailScreen> {
                     CustomButton(
                       text: 'Edit',
                       color: kPrimaryColor,
+                      onTap: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (BuildContext context) {
+                          return EditScreen(
+                            email: widget.email,
+                            data: widget.list[widget.index],
+                          );
+                        }));
+                      },
                     ),
                     SizedBox(height: 10.0),
                     CustomButton(

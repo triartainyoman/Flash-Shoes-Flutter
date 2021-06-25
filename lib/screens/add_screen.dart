@@ -1,11 +1,16 @@
 import 'package:flash_shoes_flutter/components/custom_button.dart';
 import 'package:flash_shoes_flutter/components/input_field.dart';
 import 'package:flash_shoes_flutter/components/reusable_back_button.dart';
+import 'package:flash_shoes_flutter/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flash_shoes_flutter/constants.dart';
+import 'package:http/http.dart' as http;
 
 class AddScreen extends StatefulWidget {
   static String id = 'add_screen';
+  final String email;
+
+  AddScreen({this.email});
 
   @override
   _AddScreenState createState() => _AddScreenState();
@@ -18,8 +23,29 @@ class _AddScreenState extends State<AddScreen> {
   TextEditingController controllerHarga = TextEditingController();
   TextEditingController controllerStok = TextEditingController();
   TextEditingController controllerImageURL = TextEditingController();
+
+  void simpanData() {
+    try {
+      var url = 'http://192.168.0.117/flash_shoes_api/adddata.php';
+      http.post(
+        Uri.parse(url),
+        body: {
+          "kodeBarang": controllerKode.text,
+          "namaBarang": controllerNama.text,
+          "hargaBarang": controllerHarga.text,
+          "stokBarang": controllerStok.text,
+          "imageURL": controllerImageURL.text,
+          "email": widget.email,
+        },
+      );
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    print(widget.email);
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -130,12 +156,17 @@ class _AddScreenState extends State<AddScreen> {
                     text: 'Simpan',
                     onTap: () {
                       if (_formKey.currentState.validate()) {
+                        simpanData();
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text("Data berhasil disimpan"),
+                            backgroundColor: kPrimaryColor,
                           ),
                         );
-                        print(controllerNama.text);
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (BuildContext context) {
+                          return HomeScreen();
+                        }));
                       }
                     },
                   ),

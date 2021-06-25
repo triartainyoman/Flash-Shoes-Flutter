@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flash_shoes_flutter/screens/add_screen.dart';
 import 'package:flash_shoes_flutter/screens/detail_screen.dart';
 import 'package:flutter/material.dart';
@@ -15,9 +16,38 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final _auth = FirebaseAuth.instance;
+  FirebaseUser loggedInUser;
+
+  void getCurrentUser() async {
+    try {
+      final user = await _auth.currentUser();
+      if (user != null) {
+        loggedInUser = user;
+        print(loggedInUser.email);
+        setState(() {});
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
   Future<List> getData() async {
     var url =
-        'http://192.168.0.117/flash_shoes_api/ambildata.php?email="triartainyoman@gmail.com"';
+        'http://192.168.0.117/flash_shoes_api/ambildata.php?email="${loggedInUser.email}"';
+    try {
+      var data = await http.get(Uri.parse(url));
+      var jsonData = json.decode(data.body);
+      // print(jsonData);
+      return jsonData;
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<List> getProfile() async {
+    var url =
+        'http://192.168.0.117/flash_shoes_api/ambilUser.php?email="${loggedInUser.email}"';
     try {
       var data = await http.get(Uri.parse(url));
       var jsonData = json.decode(data.body);
@@ -29,6 +59,12 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    getCurrentUser();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: Padding(
@@ -37,7 +73,11 @@ class _HomeScreenState extends State<HomeScreen> {
           backgroundColor: kPrimaryColor,
           child: Icon(Icons.add),
           onPressed: () {
-            Navigator.pushNamed(context, AddScreen.id);
+            // Navigator.pushNamed(context, AddScreen.id);
+            Navigator.push(context,
+                MaterialPageRoute(builder: (BuildContext context) {
+              return AddScreen(email: loggedInUser.email);
+            }));
           },
         ),
       ),
@@ -48,38 +88,48 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text("Roof Store", style: kTitleTextStyle),
-                    InkWell(
-                      onTap: () {},
-                      child: Container(
-                        child: Stack(
-                          children: [
-                            ClipOval(
-                              child: Container(
-                                color: kSecondaryColor,
-                                padding: EdgeInsets.all(3.0),
-                                child: ClipOval(
-                                  child: Material(
-                                    color: Colors.transparent,
-                                    child: Ink.image(
-                                      image: NetworkImage(
-                                        'https://www.w3schools.com/howto/img_avatar.png',
+                FutureBuilder(
+                  future: getProfile(),
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    if (snapshot.data == null) {
+                      return Text("Please wait..");
+                    } else {
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(snapshot.data[0]['nama_user'],
+                              style: kTitleTextStyle),
+                          InkWell(
+                            onTap: () {},
+                            child: Container(
+                              child: Stack(
+                                children: [
+                                  ClipOval(
+                                    child: Container(
+                                      color: kSecondaryColor,
+                                      padding: EdgeInsets.all(3.0),
+                                      child: ClipOval(
+                                        child: Material(
+                                          color: Colors.transparent,
+                                          child: Ink.image(
+                                            image: NetworkImage(
+                                              snapshot.data[0]['profile_url'],
+                                            ),
+                                            width: 50.0,
+                                            height: 50.0,
+                                          ),
+                                        ),
                                       ),
-                                      width: 50.0,
-                                      height: 50.0,
                                     ),
                                   ),
-                                ),
+                                ],
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
+                          ),
+                        ],
+                      );
+                    }
+                  },
                 ),
                 SizedBox(height: 50.0),
                 Text("All Shoes", style: kLabelTextStyle),
@@ -91,6 +141,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       return Container(
                         child: Center(
                           child: Text("Loading data..."),
+                        ),
+                      );
+                    } else if (snapshot.data.length == 0) {
+                      return Container(
+                        child: Center(
+                          child: Text("Data Masih Kosong"),
                         ),
                       );
                     } else {
@@ -109,6 +165,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     return DetailScreen(
                                       index: index,
                                       list: snapshot.data,
+                                      email: loggedInUser.email,
                                     );
                                   },
                                 ),
